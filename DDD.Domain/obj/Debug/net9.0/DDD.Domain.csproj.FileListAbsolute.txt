@@ -1,0 +1,14 @@
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\bin\Debug\net9.0\DDD.Domain.deps.json
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\bin\Debug\net9.0\DDD.Domain.runtimeconfig.json
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\bin\Debug\net9.0\DDD.Domain.dll
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\bin\Debug\net9.0\DDD.Domain.pdb
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.csproj.AssemblyReference.cache
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.AssemblyInfoInputs.cache
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.AssemblyInfo.cs
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.csproj.CoreCompileInputs.cache
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.dll
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\refint\DDD.Domain.dll
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.pdb
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.genruntimeconfig.cache
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\ref\DDD.Domain.dll

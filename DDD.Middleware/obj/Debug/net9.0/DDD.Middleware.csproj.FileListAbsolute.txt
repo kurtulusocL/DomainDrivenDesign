@@ -1,0 +1,14 @@
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\bin\Debug\net9.0\DDD.Middleware.deps.json
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\bin\Debug\net9.0\DDD.Middleware.runtimeconfig.json
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\bin\Debug\net9.0\DDD.Middleware.dll
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\bin\Debug\net9.0\DDD.Middleware.pdb
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\DDD.Middleware.csproj.AssemblyReference.cache
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\DDD.Middleware.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\DDD.Middleware.AssemblyInfoInputs.cache
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\DDD.Middleware.AssemblyInfo.cs
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\DDD.Middleware.csproj.CoreCompileInputs.cache
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\DDD.Middleware.dll
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\refint\DDD.Middleware.dll
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\DDD.Middleware.pdb
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\DDD.Middleware.genruntimeconfig.cache
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Middleware\obj\Debug\net9.0\ref\DDD.Middleware.dll
