@@ -10,11 +10,11 @@ namespace DDD.Application.Attributes
     {
         public static void AddFluentValidationServices(this IServiceCollection services)
         {
-            services.AddValidatorsFromAssemblyContaining<ArticleValidator>();
-            services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
-            services.AddValidatorsFromAssemblyContaining<WriterValidator>();
-            services.AddValidatorsFromAssemblyContaining<RoleValidator>();
-            services.AddValidatorsFromAssemblyContaining<UserValidator>();
+            services.AddValidatorsFromAssemblyContaining<ArticleDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<CategoryDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<WriterDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<RoleDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<UserDtoValidator>();
 
             services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
             services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();

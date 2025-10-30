@@ -15,3 +15,4 @@ C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Infrastructure\obj\Debug\net9.0\refin
 C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Infrastructure\obj\Debug\net9.0\DDD.Infrastructure.pdb
 C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Infrastructure\obj\Debug\net9.0\DDD.Infrastructure.genruntimeconfig.cache
 C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Infrastructure\obj\Debug\net9.0\ref\DDD.Infrastructure.dll
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Infrastructure\obj\Debug\net9.0\DDD.Infrastructure.sourcelink.json

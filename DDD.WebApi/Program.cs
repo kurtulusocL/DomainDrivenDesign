@@ -1,5 +1,11 @@
 using DDD.Application.DependencyResolver.DependencyInjection;
+using DDD.Application.Mapping.ArticleMapping;
 using DDD.Application.Mapping.CategoryMapping;
+using DDD.Application.Mapping.ExceptionLoggerMapping;
+using DDD.Application.Mapping.RoleMapping;
+using DDD.Application.Mapping.UserMapping;
+using DDD.Application.Mapping.UserSessionMapping;
+using DDD.Application.Mapping.WriterMapping;
 using DDD.Domain.Entities.EntityFramework.AppUser;
 using DDD.Infrastructure.EntityFramework.Context.Mssql;
 using DDD.Middleware;
@@ -10,12 +16,15 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.DependencyService();
-
 builder.Services.AddAutoMapper(cfg =>
 {
+    cfg.AddProfile<ArticleProfile>();
     cfg.AddProfile<CategoryProfile>();
-    //cfg.AddProfile<ArticleProfile>();
-    // Diðer profiller...
+    cfg.AddProfile<ExceptionLoggerProfile>();
+    cfg.AddProfile<RoleProfile>();
+    cfg.AddProfile<UserProfile>();
+    cfg.AddProfile<UserSessionProfile>();
+    cfg.AddProfile<WriterProfile>();
 });
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -23,7 +32,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
+
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlServerOptions => sqlServerOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+
 builder.Services.AddIdentity<User, Role>(opt =>
 {
     opt.Password.RequireDigit = true;

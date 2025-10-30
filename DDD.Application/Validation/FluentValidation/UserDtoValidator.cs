@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DDD.Domain.Entities.EntityFramework.AppUser;
+﻿using DDD.Application.Dtos.MappingDtos.UserMappingDto;
 using FluentValidation;
 
 namespace DDD.Application.Validation.FluentValidation
 {
-    public class UserValidator:AbstractValidator<User>
+    public class UserDtoValidator:AbstractValidator<UserDto>
     {
-        public UserValidator()
+        public UserDtoValidator()
         {
             RuleFor(i => i.NameSurname).NotEmpty().WithMessage("Name Surname can not be null");
             RuleFor(i => i.PhoneNumber).NotEmpty().WithMessage("Phone Number can not be null");

@@ -18,5 +18,10 @@ namespace DDD.Domain.Entities.EntityFramework.AppUser
         {
             IsDeleted = false;
         }
+        public Role()
+        {
+            SetCreatedDate();
+            SetDeleted();
+        }
     }
 }

@@ -12,3 +12,4 @@ C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\refint\DDD.Do
 C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.pdb
 C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.genruntimeconfig.cache
 C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\ref\DDD.Domain.dll
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.Domain\obj\Debug\net9.0\DDD.Domain.sourcelink.json

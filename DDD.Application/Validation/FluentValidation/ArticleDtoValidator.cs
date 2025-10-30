@@ -1,11 +1,11 @@
-﻿using DDD.Domain.Entities;
+﻿using DDD.Application.Dtos.MappingDtos.ArticleMappingDto;
 using FluentValidation;
 
 namespace DDD.Application.Validation.FluentValidation
 {
-    public class ArticleValidator:AbstractValidator<Article>
+    public class ArticleDtoValidator:AbstractValidator<ArticleDto>
     {
-        public ArticleValidator()
+        public ArticleDtoValidator()
         {
             RuleFor(i => i.Title).NotEmpty().WithMessage("Title can not be null");
             RuleFor(i => i.Subtitle).NotEmpty().WithMessage("Subtitle can not be null");

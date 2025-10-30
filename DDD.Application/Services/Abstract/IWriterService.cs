@@ -1,18 +1,18 @@
-﻿using DDD.Domain.Entities;
+﻿using DDD.Application.Dtos.MappingDtos.WriterMappingDto;
 using Microsoft.AspNetCore.Http;
 
 namespace DDD.Application.Services.Abstract
 {
     public interface IWriterService
     {
-        Task<IEnumerable<Writer>> GetAllIncludingAsync();
-        Task<IEnumerable<Writer>> GetAllIncludingForAddWriterAsync();
-        Task<IEnumerable<Writer>> GetAllIncludingForAdminAsync();
-        Task<Writer> GetByIdAsync(int? id);
-        Task<bool> CreateAsync(Writer entity, IFormFile image);
-        Task<bool>UpdateAsync(Writer entity, IFormFile image);
-        Task<bool> DeleteAsync(Writer entity, int id);
-        Task<bool> SetDeletedAsync(int id);
-        Task<bool> SetNotDeletedAsync(int id);
+        Task<IEnumerable<WriterDto>> GetAllIncludingAsync();
+        Task<IEnumerable<WriterDto>> GetAllIncludingForAddWriterAsync();
+        Task<IEnumerable<WriterDto>> GetAllIncludingForAdminAsync();
+        Task<WriterDto> GetByIdAsync(int? id);
+        Task<bool> CreateAsync(WriterCreateDto entity, IFormFile image);
+        Task<bool>UpdateAsync(WriterUpdateDto entity, IFormFile image);
+        Task<bool> DeleteAsync(int id);
+        Task<WriterDto> SetDeletedAsync(int id);
+        Task<WriterDto> SetNotDeletedAsync(int id);
     }
 }

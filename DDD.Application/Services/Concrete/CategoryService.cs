@@ -37,11 +37,11 @@ namespace DDD.Application.Services.Concrete
         {
             try
             {
-                var category = await _categoryRepository.GetAsync(x => x.Id == id);
-                if (category == null) 
+                var data = await _categoryRepository.GetAsync(i => i.Id == id);
+                if (data == null) 
                     return false;
 
-                return await _categoryRepository.DeleteAsync(category);
+                return await _categoryRepository.DeleteAsync(data);
             }
             catch (Exception ex)
             {

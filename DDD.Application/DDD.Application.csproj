@@ -32,9 +32,4 @@
     <ProjectReference Include="..\DDD.Shared\DDD.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Mapping\Article\" />
-    <Folder Include="Mapping\Writer\" />
-  </ItemGroup>
-
 </Project>

@@ -192,3 +192,4 @@ C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.WebApi\bin\Debug\net9.0\zh-Hans\Micro
 C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.WebApi\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.WebApi\bin\Debug\net9.0\AutoMapper.dll
 C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.WebApi\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\kurtu\OneDrive\Masaüstü\DDD\DDD.WebApi\obj\Debug\net9.0\DDD.WebApi.sourcelink.json

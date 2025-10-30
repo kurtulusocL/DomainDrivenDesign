@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
+using DDD.Application.Dtos.MappingDtos.UserMappingDto;
 using DDD.Application.Services.Abstract;
 using DDD.Domain.Entities.EntityFramework.AppUser;
 using DDD.Domain.Repositories.Abstract;
@@ -8,18 +10,17 @@ namespace DDD.Application.Services.Concrete
     public class UserService : IUserService
     {
         readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
-        public async Task<bool> DeleteAsync(User entity, string id)
+        public async Task<bool> DeleteAsync(string id)
         {
             try
             {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity), "entit was null");
-
                 var data = await _userRepository.GetAsync(i => i.Id == id);
                 if (data != null)
                 {
@@ -34,7 +35,7 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<IEnumerable<User>> GetAllIncludingAsync()
+        public async Task<IEnumerable<UserDto>> GetAllIncludingAsync()
         {
             try
             {
@@ -42,15 +43,15 @@ namespace DDD.Application.Services.Concrete
                 {
                     i=>i.IsDeleted==false
                 }, null, y => y.UserSessions);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<UserDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<User>();
+                return new List<UserDto>();
             }
         }
 
-        public async Task<IEnumerable<User>> GetAllIncludingForAdminAsync()
+        public async Task<IEnumerable<UserDto>> GetAllIncludingForAdminAsync()
         {
             try
             {
@@ -58,22 +59,23 @@ namespace DDD.Application.Services.Concrete
                 {
 
                 }, null, y => y.UserSessions);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<UserDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<User>();
+                return new List<UserDto>();
             }
         }
 
-        public async Task<User> GetByIdAsync(string? id)
+        public async Task<UserDto> GetByIdAsync(string? id)
         {
             try
             {
                 if (id == null)
                     throw new ArgumentNullException(nameof(id), "id was null");
 
-                return await _userRepository.GetIncludeAsync(i => i.Id == id, y => y.UserSessions);
+                var data = await _userRepository.GetIncludeAsync(i => i.Id == id, y => y.UserSessions);
+                return _mapper.Map<UserDto>(data);
             }
             catch (Exception ex)
             {
@@ -81,7 +83,7 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> SetDeletedAsync(string id)
+        public async Task<UserDto> SetDeletedAsync(string id)
         {
             try
             {
@@ -89,7 +91,7 @@ namespace DDD.Application.Services.Concrete
                     throw new ArgumentNullException(nameof(id), "id was null");
 
                 var result = await _userRepository.SetDeletedAsync(i => i.Id == id);
-                return result != null;
+                return _mapper.Map<UserDto>(result);
             }
             catch (Exception ex)
             {
@@ -97,7 +99,7 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> SetNotDeletedAsync(string id)
+        public async Task<UserDto> SetNotDeletedAsync(string id)
         {
             try
             {
@@ -105,7 +107,7 @@ namespace DDD.Application.Services.Concrete
                     throw new ArgumentNullException(nameof(id), "id was null");
 
                 var result = await _userRepository.SetNotDeletedAsync(i => i.Id == id);
-                return result != null;
+                return _mapper.Map<UserDto>(result);
             }
             catch (Exception ex)
             {

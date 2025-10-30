@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
+using DDD.Application.Dtos.MappingDtos.WriterMappingDto;
 using DDD.Application.Services.Abstract;
 using DDD.Domain.Entities;
 using DDD.Domain.Repositories.Abstract;
@@ -9,12 +11,14 @@ namespace DDD.Application.Services.Concrete
     public class WriterService : IWriterService
     {
         readonly IWriterRepository _writerRepository;
-        public WriterService(IWriterRepository writerRepository)
+        readonly IMapper _mapper;
+        public WriterService(IWriterRepository writerRepository, IMapper mapper)
         {
             _writerRepository = writerRepository;
+            _mapper = mapper;
         }
 
-        public async Task<bool> CreateAsync(Writer entity, IFormFile image)
+        public async Task<bool> CreateAsync(WriterCreateDto entity, IFormFile image)
         {
             try
             {
@@ -39,12 +43,8 @@ namespace DDD.Application.Services.Concrete
                             await image.CopyToAsync(stream);
                         }
                         entity.ImageUrl = fileName;
-                        var result = await _writerRepository.AddAsync(entity);
-                        if (!result)
-                        {
-                            errors.Add($"Error {fileName}.");
-                        }
-                        return true;
+                        var result = _mapper.Map<Writer>(entity);
+                        return await _writerRepository.AddAsync(result);
                     }
                     catch (Exception ex)
                     {
@@ -59,13 +59,10 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> DeleteAsync(Writer entity, int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
-            {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity), "entit was null");
-
+            {              
                 var data = await _writerRepository.GetAsync(i => i.Id == id);
                 if (data != null)
                 {
@@ -80,7 +77,7 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<IEnumerable<Writer>> GetAllIncludingAsync()
+        public async Task<IEnumerable<WriterDto>> GetAllIncludingAsync()
         {
             try
             {
@@ -88,15 +85,15 @@ namespace DDD.Application.Services.Concrete
                 {
                     i=>i.IsDeleted==false
                 }, null, y => y.Articles);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<WriterDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<Writer>();
+                return new List<WriterDto>();
             }
         }
 
-        public async Task<IEnumerable<Writer>> GetAllIncludingForAddWriterAsync()
+        public async Task<IEnumerable<WriterDto>> GetAllIncludingForAddWriterAsync()
         {
             try
             {
@@ -104,15 +101,15 @@ namespace DDD.Application.Services.Concrete
                 {
                     i=>i.IsDeleted==false
                 }, null, y => y.Articles);
-                return data.OrderByDescending(i => i.Articles.Count()).ToList();
+                return _mapper.Map<IEnumerable<WriterDto>>(data.OrderByDescending(i => i.Articles.Count()).ToList());
             }
             catch (Exception)
             {
-                return new List<Writer>();
+                return new List<WriterDto>();
             }
         }
 
-        public async Task<IEnumerable<Writer>> GetAllIncludingForAdminAsync()
+        public async Task<IEnumerable<WriterDto>> GetAllIncludingForAdminAsync()
         {
             try
             {
@@ -120,22 +117,23 @@ namespace DDD.Application.Services.Concrete
                 {
 
                 }, null, y => y.Articles);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<WriterDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<Writer>();
+                return new List<WriterDto>();
             }
         }
 
-        public async Task<Writer> GetByIdAsync(int? id)
+        public async Task<WriterDto> GetByIdAsync(int? id)
         {
             try
             {
                 if (id == null)
                     throw new ArgumentNullException(nameof(id), "id was null");
 
-                return await _writerRepository.GetIncludeAsync(i => i.Id == id, y => y.Articles);
+                var data= await _writerRepository.GetIncludeAsync(i => i.Id == id, y => y.Articles);
+                return _mapper.Map<WriterDto>(data);
             }
             catch (Exception ex)
             {
@@ -143,19 +141,19 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> SetDeletedAsync(int id)
+        public async Task<WriterDto> SetDeletedAsync(int id)
         {
             var result = await _writerRepository.SetDeletedAsync(i => i.Id == id);
-            return result != null;
+            return _mapper.Map<WriterDto>(result);
         }
 
-        public async Task<bool> SetNotDeletedAsync(int id)
+        public async Task<WriterDto> SetNotDeletedAsync(int id)
         {
             var result = await _writerRepository.SetNotDeletedAsync(i => i.Id == id);
-            return result != null;
+            return _mapper.Map<WriterDto>(result);
         }
 
-        public async Task<bool> UpdateAsync(Writer entity, IFormFile image)
+        public async Task<bool> UpdateAsync(WriterUpdateDto entity, IFormFile image)
         {
             try
             {
@@ -180,12 +178,8 @@ namespace DDD.Application.Services.Concrete
                             await image.CopyToAsync(stream);
                         }
                         entity.ImageUrl = fileName;
-                        var result = await _writerRepository.UpdateAsync(entity);
-                        if (!result)
-                        {
-                            errors.Add($"Error {fileName}.");
-                        }
-                        return true;
+                        var result = _mapper.Map<Writer>(entity);
+                        return await _writerRepository.UpdateAsync(result);
                     }
                     catch (Exception ex)
                     {

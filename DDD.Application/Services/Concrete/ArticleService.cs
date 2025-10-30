@@ -1,7 +1,10 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
+using DDD.Application.Dtos.MappingDtos.ArticleMappingDto;
 using DDD.Application.Services.Abstract;
 using DDD.Domain.Entities;
 using DDD.Domain.Repositories.Abstract;
+using DDD.Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
 
 namespace DDD.Application.Services.Concrete
@@ -9,9 +12,11 @@ namespace DDD.Application.Services.Concrete
     public class ArticleService : IArticleService
     {
         readonly IArticleRepository _articleRepository;
-        public ArticleService(IArticleRepository articleRepository)
+        readonly IMapper _mapper;
+        public ArticleService(IArticleRepository articleRepository, IMapper mapper)
         {
             _articleRepository = articleRepository;
+            _mapper = mapper;
         }
 
         public async Task<bool> CreateAsync(string title, string subtitle, string? detail, string description, int categoryId, int writerId, IFormFile image)
@@ -35,7 +40,7 @@ namespace DDD.Application.Services.Concrete
                         {
                             await image.CopyToAsync(stream);
                         }
-                        var entity = new Article
+                        var entity = new ArticleCreateDto
                         {
                             Title = title,
                             Subtitle = subtitle,
@@ -47,12 +52,8 @@ namespace DDD.Application.Services.Concrete
                         if (entity != null)
                         {
                             entity.ImageUrl = fileName;
-                            var result = await _articleRepository.AddAsync(entity);
-                            if (!result)
-                            {
-                                errors.Add($"Error {fileName}.");
-                            }
-                            return true;
+                            var result = _mapper.Map<Article>(entity);
+                            return await _articleRepository.AddAsync(result);
                         }
                         return false;
                     }
@@ -69,13 +70,10 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> DeleteAsync(Article entity, int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity), "entit was null");
-
                 var data = await _articleRepository.GetAsync(i => i.Id == id);
                 if (data != null)
                 {
@@ -90,7 +88,7 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<IEnumerable<Article>> GetAllIncludingAsync()
+        public async Task<IEnumerable<ArticleDto>> GetAllIncludingAsync()
         {
             try
             {
@@ -98,15 +96,15 @@ namespace DDD.Application.Services.Concrete
                 {
                     i=>i.IsDeleted==false
                 }, null, y => y.Writer, y => y.Category);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<ArticleDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<Article>();
+                return new List<ArticleDto>();
             }
         }
 
-        public async Task<IEnumerable<Article>> GetAllIncludingByCategoryIdAsync(int categoryId)
+        public async Task<IEnumerable<ArticleDto>> GetAllIncludingByCategoryIdAsync(int categoryId)
         {
             try
             {
@@ -114,15 +112,15 @@ namespace DDD.Application.Services.Concrete
                 {
                     i=>i.IsDeleted==false
                 }, null, y => y.Writer, y => y.Category);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<ArticleDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<Article>();
+                return new List<ArticleDto>();
             }
         }
 
-        public async Task<IEnumerable<Article>> GetAllIncludingByWriterIdAsync(int writerId)
+        public async Task<IEnumerable<ArticleDto>> GetAllIncludingByWriterIdAsync(int writerId)
         {
             try
             {
@@ -130,15 +128,15 @@ namespace DDD.Application.Services.Concrete
                 {
                     i=>i.IsDeleted==false
                 }, null, y => y.Writer, y => y.Category);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<ArticleDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<Article>();
+                return new List<ArticleDto>();
             }
         }
 
-        public async Task<IEnumerable<Article>> GetAllIncludingForAdminAsync()
+        public async Task<IEnumerable<ArticleDto>> GetAllIncludingForAdminAsync()
         {
             try
             {
@@ -146,22 +144,23 @@ namespace DDD.Application.Services.Concrete
                 {
 
                 }, null, y => y.Writer, y => y.Category);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<ArticleDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<Article>();
+                return new List<ArticleDto>();
             }
         }
 
-        public async Task<Article> GetByIdAsync(int? id)
+        public async Task<ArticleDto> GetByIdAsync(int? id)
         {
             try
             {
                 if (id == null)
                     throw new ArgumentNullException(nameof(id), "id was null");
 
-                return await _articleRepository.GetIncludeAsync(i => i.Id == id, y => y.Writer, y => y.Category);
+                var data = await _articleRepository.GetIncludeAsync(i => i.Id == id, y => y.Writer, y => y.Category);
+                return _mapper.Map<ArticleDto>(data);
             }
             catch (Exception ex)
             {
@@ -169,16 +168,16 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> SetDeletedAsync(int id)
+        public async Task<ArticleDto> SetDeletedAsync(int id)
         {
             var result = await _articleRepository.SetDeletedAsync(i => i.Id == id);
-            return result != null;
+            return _mapper.Map<ArticleDto>(result);
         }
 
-        public async Task<bool> SetNotDeletedAsync(int id)
+        public async Task<ArticleDto> SetNotDeletedAsync(int id)
         {
             var result = await _articleRepository.SetNotDeletedAsync(i => i.Id == id);
-            return result != null;
+            return _mapper.Map<ArticleDto>(result);
         }
 
         public async Task<bool> UpdateAsync(string title, string subtitle, string? detail, string description, int categoryId, int writerId, IFormFile image, int id)
@@ -202,24 +201,21 @@ namespace DDD.Application.Services.Concrete
                         {
                             await image.CopyToAsync(stream);
                         }
-                        var entity = new Article
+                        var entity = new ArticleUpdateDto
                         {
                             Title = title,
                             Subtitle = subtitle,
                             Detail = detail,
                             Description = description,
                             CategoryId = categoryId,
-                            WriterId = writerId
+                            WriterId = writerId,
+                            Id = id
                         };
                         if (entity != null)
                         {
                             entity.ImageUrl = fileName;
-                            var result = await _articleRepository.UpdateAsync(entity);
-                            if (!result)
-                            {
-                                errors.Add($"Error {fileName}.");
-                            }
-                            return true;
+                            var result = _mapper.Map<Article>(entity);
+                            return await _articleRepository.UpdateAsync(result);
                         }
                         return false;
                     }

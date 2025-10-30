@@ -38,10 +38,6 @@ namespace DDD.Application.Services.Concrete
                 if (user == null)
                     throw new ArgumentNullException(nameof(user), "User was null");
 
-                Random random = new Random();
-                int code;
-                code = random.Next(100000, 1000000);
-
                 if (user.IsDeleted == false)
                 {
                     _httpContextAccessor.HttpContext.Session.SetString("userId", user.Id);
@@ -121,7 +117,7 @@ namespace DDD.Application.Services.Concrete
                 if (result.Succeeded)
                 {
                     MimeMessage mimeMessage = new MimeMessage();
-                    MailboxAddress mailboxAddressFrom = new MailboxAddress("DDD", "registermail.activation@gmail.com");
+                    MailboxAddress mailboxAddressFrom = new MailboxAddress("DDD", "email address");
                     MailboxAddress mailboxAddressTo = new MailboxAddress(user.UserName, user.Email);
 
                     mimeMessage.From.Add(mailboxAddressFrom);
@@ -134,7 +130,7 @@ namespace DDD.Application.Services.Concrete
 
                     SmtpClient client = new SmtpClient();
                     client.Connect("smtp.gmail.com", 587, false);
-                    client.Authenticate("registermail.activation@gmail.com", "qcec eigi lqqn qeqn");
+                    client.Authenticate("email address", "password");
                     await client.SendAsync(mimeMessage);
                     client.Disconnect(true);
                 }

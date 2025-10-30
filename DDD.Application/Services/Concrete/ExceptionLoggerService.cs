@@ -1,4 +1,6 @@
-﻿using DDD.Application.Services.Abstract;
+﻿using AutoMapper;
+using DDD.Application.Dtos.MappingDtos.ExceptionLoggerMappingDto;
+using DDD.Application.Services.Abstract;
 using DDD.Domain.Entities;
 using DDD.Domain.Repositories.Abstract;
 
@@ -7,20 +9,22 @@ namespace DDD.Application.Services.Concrete
     public class ExceptionLoggerService : IExceptionLoggerService
     {
         readonly IExceptionLoggerRepository _exceptionLoggerRepository;
-        public ExceptionLoggerService(IExceptionLoggerRepository exceptionLoggerRepository)
+        readonly IMapper _mapper;
+        public ExceptionLoggerService(IExceptionLoggerRepository exceptionLoggerRepository, IMapper mapper)
         {
             _exceptionLoggerRepository = exceptionLoggerRepository;
+            _mapper = mapper;
         }
 
-        public async Task<bool> CreateAsync(ExceptionLogger entity)
+        public async Task<bool> CreateAsync(ExceptionLoggerCreateDto entity)
         {
             try
             {
                 if (entity == null)
                     throw new ArgumentNullException(nameof(entity), "entity was null");
 
-                var result = await _exceptionLoggerRepository.AddAsync(entity);
-                return result;
+                var result = _mapper.Map<ExceptionLogger>(entity);
+                return await _exceptionLoggerRepository.AddAsync(result);
             }
             catch (Exception ex)
             {
@@ -28,13 +32,10 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> DeleteAsync(ExceptionLogger entity, int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity), "entit was null");
-
                 var data = await _exceptionLoggerRepository.GetAsync(i => i.Id == id);
                 if (data != null)
                 {
@@ -49,40 +50,41 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<IEnumerable<ExceptionLogger>> GetAllAsync()
+        public async Task<IEnumerable<ExceptionLoggerDto>> GetAllAsync()
         {
             try
             {
                 var data = await _exceptionLoggerRepository.GetAllAsync(i => i.IsDeleted == false);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<ExceptionLoggerDto>>(data.OrderByDescending(i => i.CreatedDate));
             }
             catch (Exception)
             {
-                return new List<ExceptionLogger>();
+                return new List<ExceptionLoggerDto>();
             }
         }
 
-        public async Task<IEnumerable<ExceptionLogger>> GetAllForAdminAsync()
+        public async Task<IEnumerable<ExceptionLoggerDto>> GetAllForAdminAsync()
         {
             try
             {
                 var data = await _exceptionLoggerRepository.GetAllAsync();
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<ExceptionLoggerDto>>(data.OrderByDescending(i => i.CreatedDate));
             }
             catch (Exception)
             {
-                return new List<ExceptionLogger>();
+                return new List<ExceptionLoggerDto>();
             }
         }
 
-        public async Task<ExceptionLogger> GetByIdAsync(int? id)
+        public async Task<ExceptionLoggerDto> GetByIdAsync(int? id)
         {
             try
             {
                 if (id == null)
                     throw new ArgumentNullException(nameof(id), "id was null");
 
-                return await _exceptionLoggerRepository.GetAsync(i => i.Id == id);
+                var data = await _exceptionLoggerRepository.GetAsync(i => i.Id == id);
+                return _mapper.Map<ExceptionLoggerDto>(data);
             }
             catch (Exception ex)
             {
@@ -90,16 +92,16 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> SetDeletedAsync(int id)
+        public async Task<ExceptionLoggerDto> SetDeletedAsync(int id)
         {
             var result = await _exceptionLoggerRepository.SetDeletedAsync(i => i.Id == id);
-            return result != null;
+            return _mapper.Map<ExceptionLoggerDto>(result);
         }
 
-        public async Task<bool> SetNotDeletedAsync(int id)
+        public async Task<ExceptionLoggerDto> SetNotDeletedAsync(int id)
         {
             var result = await _exceptionLoggerRepository.SetNotDeletedAsync(i => i.Id == id);
-            return result != null;
+            return _mapper.Map<ExceptionLoggerDto>(result);
         }
     }
 }

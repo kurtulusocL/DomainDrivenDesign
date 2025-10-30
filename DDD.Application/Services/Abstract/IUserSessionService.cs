@@ -1,17 +1,17 @@
-﻿using DDD.Domain.Entities;
+﻿using DDD.Application.Dtos.MappingDtos.UserSessionMappingDto;
 
 namespace DDD.Application.Services.Abstract
 {
     public interface IUserSessionService
     {
-        Task<IEnumerable<UserSession>> GetAllIncludingAsync();
-        Task<IEnumerable<UserSession>> GetAllIncludingByOnlineUserAsync();
-        Task<IEnumerable<UserSession>> GetAllIncludingByOfflineUserAsync();
-        Task<IEnumerable<UserSession>> GetAllIncludingVyUserIdAsync(string userId);
-        Task<IEnumerable<UserSession>> GetAllIncludingForAdminAsync();
-        Task<UserSession> GetByIdAsync(int? id);
-        Task<bool> DeleteAsync(UserSession entity, int id);
-        Task<bool> SetDeletedAsync(int id);
-        Task<bool> SetNotDeleted(int id);
+        Task<IEnumerable<UserSessionDto>> GetAllIncludingAsync();
+        Task<IEnumerable<UserSessionDto>> GetAllIncludingByOnlineUserAsync();
+        Task<IEnumerable<UserSessionDto>> GetAllIncludingByOfflineUserAsync();
+        Task<IEnumerable<UserSessionDto>> GetAllIncludingByUserIdAsync(string userId);
+        Task<IEnumerable<UserSessionDto>> GetAllIncludingForAdminAsync();
+        Task<UserSessionDto> GetByIdAsync(int? id);
+        Task<bool> DeleteAsync(int id);
+        Task<UserSessionDto> SetDeletedAsync(int id);
+        Task<UserSessionDto> SetNotDeleted(int id);
     }
 }

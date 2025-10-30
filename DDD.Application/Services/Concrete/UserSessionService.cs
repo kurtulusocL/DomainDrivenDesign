@@ -1,4 +1,6 @@
 ﻿using System.Linq.Expressions;
+using AutoMapper;
+using DDD.Application.Dtos.MappingDtos.UserSessionMappingDto;
 using DDD.Application.Services.Abstract;
 using DDD.Domain.Entities;
 using DDD.Domain.Repositories.Abstract;
@@ -8,18 +10,17 @@ namespace DDD.Application.Services.Concrete
     public class UserSessionService : IUserSessionService
     {
         readonly IUserSessionRepository _userSessionRepository;
-        public UserSessionService(IUserSessionRepository userSessionRepository)
+        readonly IMapper _mapper;
+        public UserSessionService(IUserSessionRepository userSessionRepository, IMapper mapper)
         {
             _userSessionRepository = userSessionRepository;
+            _mapper = mapper;
         }
 
-        public async Task<bool> DeleteAsync(UserSession entity, int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity), "entit was null");
-
                 var data = await _userSessionRepository.GetAsync(i => i.Id == id);
                 if (data != null)
                 {
@@ -34,7 +35,7 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<IEnumerable<UserSession>> GetAllIncludingAsync()
+        public async Task<IEnumerable<UserSessionDto>> GetAllIncludingAsync()
         {
             try
             {
@@ -42,32 +43,32 @@ namespace DDD.Application.Services.Concrete
                 {
                     i=>i.IsDeleted==false
                 }, null, y => y.User);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<UserSessionDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<UserSession>();
+                return new List<UserSessionDto>();
             }
         }
 
-        public async Task<IEnumerable<UserSession>> GetAllIncludingByOfflineUserAsync()
+        public async Task<IEnumerable<UserSessionDto>> GetAllIncludingByOfflineUserAsync()
         {
             try
             {
                 var data = await _userSessionRepository.GetAllIncludeAsync(new Expression<Func<UserSession, bool>>[]
                 {
                     i=>i.IsDeleted==false,
-                    i=>i.IsOnline==false
+                    i=>i.IsOnline==false &&i.LogoutDate!=null
                 }, null, y => y.User);
-                return data.OrderByDescending(i => i.LogoutDate).ToList();
+                return _mapper.Map<IEnumerable<UserSessionDto>>(data.OrderByDescending(i => i.LogoutDate).ToList());
             }
             catch (Exception)
             {
-                return new List<UserSession>();
+                return new List<UserSessionDto>();
             }
         }
 
-        public async Task<IEnumerable<UserSession>> GetAllIncludingByOnlineUserAsync()
+        public async Task<IEnumerable<UserSessionDto>> GetAllIncludingByOnlineUserAsync()
         {
             try
             {
@@ -76,15 +77,15 @@ namespace DDD.Application.Services.Concrete
                     i=>i.IsDeleted==false,
                     i=>i.IsOnline==true
                 }, null, y => y.User);
-                return data.OrderByDescending(i => i.LoginDate).ToList();
+                return _mapper.Map<IEnumerable<UserSessionDto>>(data.OrderByDescending(i => i.LoginDate).ToList());
             }
             catch (Exception)
             {
-                return new List<UserSession>();
+                return new List<UserSessionDto>();
             }
         }
 
-        public async Task<IEnumerable<UserSession>> GetAllIncludingForAdminAsync()
+        public async Task<IEnumerable<UserSessionDto>> GetAllIncludingForAdminAsync()
         {
             try
             {
@@ -92,15 +93,15 @@ namespace DDD.Application.Services.Concrete
                 {
 
                 }, null, y => y.User);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<UserSessionDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<UserSession>();
+                return new List<UserSessionDto>();
             }
         }
 
-        public async Task<IEnumerable<UserSession>> GetAllIncludingVyUserIdAsync(string userId)
+        public async Task<IEnumerable<UserSessionDto>> GetAllIncludingByUserIdAsync(string userId)
         {
             try
             {
@@ -111,22 +112,23 @@ namespace DDD.Application.Services.Concrete
                 {
                     i=>i.IsDeleted==false
                 }, null, y => y.User);
-                return data.OrderByDescending(i => i.CreatedDate).ToList();
+                return _mapper.Map<IEnumerable<UserSessionDto>>(data.OrderByDescending(i => i.CreatedDate).ToList());
             }
             catch (Exception)
             {
-                return new List<UserSession>();
+                return new List<UserSessionDto>();
             }
         }
 
-        public async Task<UserSession> GetByIdAsync(int? id)
+        public async Task<UserSessionDto> GetByIdAsync(int? id)
         {
             try
             {
                 if (id == null)
                     throw new ArgumentNullException(nameof(id), "id was null");
 
-                return await _userSessionRepository.GetIncludeAsync(i => i.Id == id, y => y.User);
+                var data = await _userSessionRepository.GetIncludeAsync(i => i.Id == id, y => y.User);
+                return _mapper.Map<UserSessionDto>(data);
             }
             catch (Exception ex)
             {
@@ -134,16 +136,16 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> SetDeletedAsync(int id)
+        public async Task<UserSessionDto> SetDeletedAsync(int id)
         {
             var result = await _userSessionRepository.SetDeletedAsync(i => i.Id == id);
-            return result != null;
+            return _mapper.Map<UserSessionDto>(result);
         }
 
-        public async Task<bool> SetNotDeleted(int id)
+        public async Task<UserSessionDto> SetNotDeleted(int id)
         {
             var result = await _userSessionRepository.SetNotDeletedAsync(i => i.Id == id);
-            return result != null;
+            return _mapper.Map<UserSessionDto>(result);
         }
     }
 }

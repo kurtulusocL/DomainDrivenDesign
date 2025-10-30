@@ -1,5 +1,4 @@
 ﻿using DDD.Application.Dtos.MappingDtos.CategoryMappingDtos;
-using DDD.Domain.Entities;
 
 namespace DDD.Application.Services.Abstract
 {

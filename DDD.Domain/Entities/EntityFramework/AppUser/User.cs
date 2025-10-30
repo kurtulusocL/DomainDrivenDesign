@@ -27,6 +27,8 @@ namespace DDD.Domain.Entities.EntityFramework.AppUser
         {
             PhoneNumberConfirmed = true;
             EmailConfirmed = true;
+            SetCreatedDate();
+            SetDeleted();
         }
     }
 }

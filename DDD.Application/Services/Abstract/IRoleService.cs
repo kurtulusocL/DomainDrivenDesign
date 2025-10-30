@@ -1,16 +1,16 @@
-﻿using DDD.Domain.Entities.EntityFramework.AppUser;
+﻿using DDD.Application.Dtos.MappingDtos.RoleMappingDto;
 
 namespace DDD.Application.Services.Abstract
 {
     public interface IRoleService
     {
-        Task<IEnumerable<Role>> GetAllAsync();
-        Task<IEnumerable<Role>> GetAllForAdminAsync();
-        Task<Role> GetByIdAsync(string? id);
-        Task<bool> CreateAsync(Role entity);
-        Task<bool> UpdateAsync(Role entity);
-        Task<bool> DeleteAsync(Role entity, string id);
-        Task<bool> SetDeletedAsync(string id);
-        Task<bool> SetNotDeletedAsync(string id);
+        Task<IEnumerable<RoleDto>> GetAllAsync();
+        Task<IEnumerable<RoleDto>> GetAllForAdminAsync();
+        Task<RoleDto> GetByIdAsync(string? id);
+        Task<bool> CreateAsync(RoleCreateDto entity);
+        Task<bool> UpdateAsync(RoleUpdateDto entity);
+        Task<bool> DeleteAsync(string id);
+        Task<RoleDto> SetDeletedAsync(string id);
+        Task<RoleDto> SetNotDeletedAsync(string id);
     }
 }

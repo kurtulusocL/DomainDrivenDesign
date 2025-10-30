@@ -1,11 +1,11 @@
-﻿using DDD.Domain.Entities;
+﻿using DDD.Application.Dtos.MappingDtos.CategoryMappingDtos;
 using FluentValidation;
 
 namespace DDD.Application.Validation.FluentValidation
 {
-    public class CategoryValidator:AbstractValidator<Category>
+    public class CategoryDtoValidator:AbstractValidator<CategoryDto>
     {
-        public CategoryValidator()
+        public CategoryDtoValidator()
         {
             RuleFor(i => i.Name).NotEmpty().WithMessage("Name can not be null");
         }
