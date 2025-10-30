@@ -6,7 +6,7 @@ namespace DDD.Domain.Entities
     {
         public string NameSurname { get; set; }
         public string Title { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public virtual ICollection<Article> Articles { get; set; }
     }

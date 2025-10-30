@@ -6,7 +6,7 @@ namespace DDD.Application.Services.Abstract
     {
         Task<IEnumerable<RoleDto>> GetAllAsync();
         Task<IEnumerable<RoleDto>> GetAllForAdminAsync();
-        Task<RoleDto> GetByIdAsync(string? id);
+        Task<RoleDto> GetByIdAsync(string id);
         Task<bool> CreateAsync(RoleCreateDto entity);
         Task<bool> UpdateAsync(RoleUpdateDto entity);
         Task<bool> DeleteAsync(string id);

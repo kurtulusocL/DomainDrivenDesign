@@ -7,7 +7,7 @@ namespace DDD.Application.Services.Abstract
     {
         Task<IEnumerable<UserDto>> GetAllIncludingAsync();
         Task<IEnumerable<UserDto>> GetAllIncludingForAdminAsync();
-        Task<UserDto> GetByIdAsync(string? id);
+        Task<UserDto> GetByIdAsync(string id);
         Task<bool> DeleteAsync(string id);
         Task<UserDto> SetDeletedAsync(string id);
         Task<UserDto> SetNotDeletedAsync(string id);

@@ -9,8 +9,8 @@ namespace DDD.Application.Mapping.RoleMapping
         public RoleProfile()
         {
             CreateMap<Role, RoleDto>();
-            CreateMap<RoleCreateDto, RoleDto>().ReverseMap();
-            CreateMap<RoleUpdateDto, RoleDto>().ReverseMap();
+            CreateMap<RoleCreateDto, Role>().ReverseMap();
+            CreateMap<RoleUpdateDto, Role>().ReverseMap();
         }
     }
 }

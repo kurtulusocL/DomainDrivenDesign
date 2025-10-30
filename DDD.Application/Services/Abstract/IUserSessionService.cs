@@ -12,6 +12,6 @@ namespace DDD.Application.Services.Abstract
         Task<UserSessionDto> GetByIdAsync(int? id);
         Task<bool> DeleteAsync(int id);
         Task<UserSessionDto> SetDeletedAsync(int id);
-        Task<UserSessionDto> SetNotDeleted(int id);
+        Task<UserSessionDto> SetNotDeletedAsync(int id);
     }
 }

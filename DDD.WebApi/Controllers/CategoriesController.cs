@@ -73,8 +73,8 @@ namespace DDD.WebApi.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{id}/soft-delete")]
-        public async Task<IActionResult> SoftDelete(int id)
+        [HttpPatch("{id}/set-deleted")]
+        public async Task<IActionResult> SetDeleted(int id)
         {
             var result = await _categoryService.SetDeletedAsync(id);
             if (result == null)
@@ -82,8 +82,8 @@ namespace DDD.WebApi.Controllers
             return Ok(result);
         }
 
-        [HttpPatch("{id}/undelete")]
-        public async Task<IActionResult> Undelete(int id)
+        [HttpPatch("{id}/set-not-deleted")]
+        public async Task<IActionResult> SetNotDeleted(int id)
         {
             var result = await _categoryService.SetNotDeletedAsync(id);
             if (result == null)

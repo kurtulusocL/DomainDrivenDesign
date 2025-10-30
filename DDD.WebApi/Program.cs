@@ -9,9 +9,12 @@ using DDD.Application.Mapping.WriterMapping;
 using DDD.Domain.Entities.EntityFramework.AppUser;
 using DDD.Infrastructure.EntityFramework.Context.Mssql;
 using DDD.Middleware;
+using DDD.WebApi.Filters;
 using DDD.WebApi.Helpers;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,8 +33,16 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    //options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
+
+//builder.Services.Configure<FormOptions>(options =>
+//{
+//    options.MultipartBodyLengthLimit = 104857600;
+//    options.ValueLengthLimit = int.MaxValue;
+//    options.MultipartHeadersLengthLimit = int.MaxValue;
+//});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlServerOptions => sqlServerOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
@@ -55,7 +66,14 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+    // Multipart/form-data için destek ekle
+    c.OperationFilter<FileUploadOperationFilter>();
+});
 
 var app = builder.Build();
 

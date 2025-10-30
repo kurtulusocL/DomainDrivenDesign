@@ -1,10 +1,10 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using DDD.Application.Dtos.MappingDtos.WriterMappingDto;
+using DDD.Application.Dtos.MappingDtos.WriterMappingDto.Requests;
 using DDD.Application.Services.Abstract;
 using DDD.Domain.Entities;
 using DDD.Domain.Repositories.Abstract;
-using Microsoft.AspNetCore.Http;
 
 namespace DDD.Application.Services.Concrete
 {
@@ -18,15 +18,16 @@ namespace DDD.Application.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateAsync(WriterCreateDto entity, IFormFile image)
+        public async Task<bool> CreateAsync(WriterCreateRequest request)
         {
             try
             {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity), "entity was null");
+                if (request == null)
+                    throw new ArgumentNullException(nameof(request), "request was null");
 
-                var errors = new List<string>();
-                if (image != null)
+                string imageUrl = null;
+
+                if (request.Image != null)
                 {
                     var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/writer/");
                     if (!Directory.Exists(directoryPath))
@@ -34,24 +35,32 @@ namespace DDD.Application.Services.Concrete
                         Console.WriteLine($"Path is preparing: {directoryPath}");
                         Directory.CreateDirectory(directoryPath);
                     }
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.Image.FileName);
                     var filePath = Path.Combine(directoryPath, fileName);
+
                     try
                     {
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            await image.CopyToAsync(stream);
+                            await request.Image.CopyToAsync(stream);
                         }
-                        entity.ImageUrl = fileName;
-                        var result = _mapper.Map<Writer>(entity);
-                        return await _writerRepository.AddAsync(result);
+
+                        imageUrl = $"/img/writer/{fileName}";
                     }
                     catch (Exception ex)
                     {
-                        errors.Add($"Error {fileName} : {ex.Message}");
+                        throw new Exception($"Error uploading image: {ex.Message}", ex);
                     }
                 }
-                return false;
+                var writer = new Writer
+                {
+                    NameSurname = request.NameSurname,
+                    Title = request.Title,
+                    ImageUrl = imageUrl
+                };
+                var result = _mapper.Map<Writer>(request);
+                return await _writerRepository.AddAsync(result);
             }
             catch (Exception ex)
             {
@@ -62,7 +71,7 @@ namespace DDD.Application.Services.Concrete
         public async Task<bool> DeleteAsync(int id)
         {
             try
-            {              
+            {
                 var data = await _writerRepository.GetAsync(i => i.Id == id);
                 if (data != null)
                 {
@@ -132,7 +141,7 @@ namespace DDD.Application.Services.Concrete
                 if (id == null)
                     throw new ArgumentNullException(nameof(id), "id was null");
 
-                var data= await _writerRepository.GetIncludeAsync(i => i.Id == id, y => y.Articles);
+                var data = await _writerRepository.GetIncludeAsync(i => i.Id == id, y => y.Articles);
                 return _mapper.Map<WriterDto>(data);
             }
             catch (Exception ex)
@@ -153,15 +162,16 @@ namespace DDD.Application.Services.Concrete
             return _mapper.Map<WriterDto>(result);
         }
 
-        public async Task<bool> UpdateAsync(WriterUpdateDto entity, IFormFile image)
+        public async Task<bool> UpdateAsync(WriterUpdateRequest request)
         {
             try
             {
-                if (entity == null)
-                    throw new ArgumentNullException(nameof(entity), "entity was null");
+                if (request == null)
+                    throw new ArgumentNullException(nameof(request), "request was null");
 
-                var errors = new List<string>();
-                if (image != null)
+                string imageUrl = null;
+
+                if (request.CurrentImageUrl != null)
                 {
                     var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/writer/");
                     if (!Directory.Exists(directoryPath))
@@ -169,24 +179,33 @@ namespace DDD.Application.Services.Concrete
                         Console.WriteLine($"Path is preparing: {directoryPath}");
                         Directory.CreateDirectory(directoryPath);
                     }
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageUrl.FileName);
                     var filePath = Path.Combine(directoryPath, fileName);
+
                     try
                     {
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            await image.CopyToAsync(stream);
+                            await request.ImageUrl.CopyToAsync(stream);
                         }
-                        entity.ImageUrl = fileName;
-                        var result = _mapper.Map<Writer>(entity);
-                        return await _writerRepository.UpdateAsync(result);
+
+                        imageUrl = $"/img/writer/{fileName}";
                     }
                     catch (Exception ex)
                     {
-                        errors.Add($"Error {fileName} : {ex.Message}");
+                        throw new Exception($"Error uploading image: {ex.Message}", ex);
                     }
                 }
-                return false;
+                var writer = new Writer
+                {
+                    NameSurname = request.NameSurname,
+                    Title = request.Title,
+                    ImageUrl = imageUrl
+                };
+
+                var result = _mapper.Map<Writer>(request);
+                return await _writerRepository.UpdateAsync(result);
             }
             catch (Exception ex)
             {

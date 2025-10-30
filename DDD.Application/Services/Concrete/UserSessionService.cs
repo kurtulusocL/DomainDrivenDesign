@@ -142,7 +142,7 @@ namespace DDD.Application.Services.Concrete
             return _mapper.Map<UserSessionDto>(result);
         }
 
-        public async Task<UserSessionDto> SetNotDeleted(int id)
+        public async Task<UserSessionDto> SetNotDeletedAsync(int id)
         {
             var result = await _userSessionRepository.SetNotDeletedAsync(i => i.Id == id);
             return _mapper.Map<UserSessionDto>(result);

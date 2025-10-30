@@ -76,7 +76,7 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<RoleDto> GetByIdAsync(string? id)
+        public async Task<RoleDto> GetByIdAsync(string id)
         {
             try
             {
