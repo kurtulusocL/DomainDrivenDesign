@@ -8,7 +8,7 @@ namespace DDD.Application.Services.Abstract
         Task<bool> LoginAsync(LoginDto login);
         Task<bool> RegisterAsync(RegisterDto model);
         Task<bool> AdminRegisterAsync(RegisterDto model);
-        Task<bool> ConfirmMailAsync(ConfirmCodeDto model, string value);
+        Task<bool> ConfirmMailAsync(ConfirmCodeDto model);
         Task<List<RoleAssignVM>> GetRoleAssingAsync(string id);
         Task<bool> RoleAssignAsync(List<RoleAssignVM> modelList, string id);
         Task<bool> LogoutAsync();

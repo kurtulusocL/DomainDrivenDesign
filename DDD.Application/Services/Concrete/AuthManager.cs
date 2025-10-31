@@ -111,13 +111,13 @@ namespace DDD.Application.Services.Concrete
                     CreatedDate = DateTime.UtcNow
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
-                await _userManager.AddToRoleAsync(user, "Users");
-                _httpContextAccessor.HttpContext.Session.SetString("email", user.Email);
+                //await _userManager.AddToRoleAsync(user, "User");
+                //_httpContextAccessor.HttpContext.Session.SetString("email", user.Email);
 
                 if (result.Succeeded)
                 {
                     MimeMessage mimeMessage = new MimeMessage();
-                    MailboxAddress mailboxAddressFrom = new MailboxAddress("DDD", "email address");
+                    MailboxAddress mailboxAddressFrom = new MailboxAddress("DDD", "registermail.activation@gmail.com");
                     MailboxAddress mailboxAddressTo = new MailboxAddress(user.UserName, user.Email);
 
                     mimeMessage.From.Add(mailboxAddressFrom);
@@ -130,7 +130,7 @@ namespace DDD.Application.Services.Concrete
 
                     SmtpClient client = new SmtpClient();
                     client.Connect("smtp.gmail.com", 587, false);
-                    client.Authenticate("email address", "password");
+                    client.Authenticate("registermail.activation@gmail.com", "umlw sexu cbjh gfez");
                     await client.SendAsync(mimeMessage);
                     client.Disconnect(true);
                 }
@@ -142,29 +142,33 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> ConfirmMailAsync(ConfirmCodeDto model, string value)
+        public async Task<bool> ConfirmMailAsync(ConfirmCodeDto model)
         {
             try
             {
-                value = _httpContextAccessor.HttpContext.Session.GetString("email");
-                if (value != null)
-                {
-                    var user = await _userManager.FindByEmailAsync(value);
-                    if (user != null)
-                    {
-                        if (user.ConfirmCode == model.ConfirmCode)
-                        {
-                            return true;
-                        }
-                        throw new Exception("Confirm codes are not same");
-                    }
-                    throw new ArgumentNullException(nameof(user), "user was null");
-                }
-                throw new ArgumentNullException(nameof(value), "value was null");
+                if (model == null)
+                    throw new ArgumentNullException(nameof(model), "model was null");
+
+                if (string.IsNullOrEmpty(model.Email))
+                    throw new Exception("Email cannot be empty");
+
+                var user = await _userManager.FindByEmailAsync(model.Email);
+
+                if (user == null)
+                    throw new Exception("User not found");
+
+                if (user.ConfirmCode != model.ConfirmCode)
+                    throw new Exception("Invalid confirmation code");
+
+                user.EmailConfirmed = true;
+                user.ConfirmCode = null;
+                await _userManager.UpdateAsync(user);
+                await _userManager.AddToRoleAsync(user, "User");
+                return true;
             }
             catch (Exception ex)
             {
-                throw new Exception("An unexpected error occurred while confirming email.", ex);
+                throw new Exception($"An unexpected error occurred while confirming email: {ex.Message}", ex);
             }
         }
 

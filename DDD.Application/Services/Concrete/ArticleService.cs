@@ -1,10 +1,10 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using DDD.Application.Dtos.MappingDtos.ArticleMappingDto;
+using DDD.Application.Dtos.MappingDtos.ArticleMappingDto.Requests;
 using DDD.Application.Services.Abstract;
 using DDD.Domain.Entities;
 using DDD.Domain.Repositories.Abstract;
-using DDD.Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
 
 namespace DDD.Application.Services.Concrete
@@ -19,12 +19,16 @@ namespace DDD.Application.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<bool> CreateAsync(string title, string subtitle, string? detail, string description, int categoryId, int writerId, IFormFile image)
+        public async Task<bool> CreateAsync(ArticleCreateRequest request)
         {
             try
             {
-                var errors = new List<string>();
-                if (image != null)
+                if (request == null)
+                    throw new ArgumentNullException(nameof(request), "request was null");
+
+                string imageUrl = null;
+
+                if (request.ImageUrl != null)
                 {
                     var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/article/");
                     if (!Directory.Exists(directoryPath))
@@ -32,37 +36,37 @@ namespace DDD.Application.Services.Concrete
                         Console.WriteLine($"Path is preparing: {directoryPath}");
                         Directory.CreateDirectory(directoryPath);
                     }
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageUrl.FileName);
                     var filePath = Path.Combine(directoryPath, fileName);
+
                     try
                     {
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            await image.CopyToAsync(stream);
+                            await request.ImageUrl.CopyToAsync(stream);
                         }
-                        var entity = new ArticleCreateDto
-                        {
-                            Title = title,
-                            Subtitle = subtitle,
-                            Detail = detail,
-                            Description = description,
-                            CategoryId = categoryId,
-                            WriterId = writerId
-                        };
-                        if (entity != null)
-                        {
-                            entity.ImageUrl = fileName;
-                            var result = _mapper.Map<Article>(entity);
-                            return await _articleRepository.AddAsync(result);
-                        }
-                        return false;
+
+                        imageUrl = $"/img/article/{fileName}";
                     }
                     catch (Exception ex)
                     {
-                        errors.Add($"Error {fileName} : {ex.Message}");
+                        throw new Exception($"Error uploading image: {ex.Message}", ex);
                     }
+                    var entity = new Article
+                    {
+                        Title = request.Title,
+                        Subtitle = request.Subtitle,
+                        Detail = request.Detail,
+                        Description = request.Description,
+                        CategoryId = request.CategoryId,
+                        WriterId = request.WriterId,
+                        ImageUrl = imageUrl
+                    };
+                    var result = _mapper.Map<Article>(request);
+                    return await _articleRepository.AddAsync(result);
                 }
-                throw new Exception("No Image for upload.");
+                return false;
             }
             catch (Exception ex)
             {
@@ -180,12 +184,16 @@ namespace DDD.Application.Services.Concrete
             return _mapper.Map<ArticleDto>(result);
         }
 
-        public async Task<bool> UpdateAsync(string title, string subtitle, string? detail, string description, int categoryId, int writerId, IFormFile image, int id)
+        public async Task<bool> UpdateAsync(ArticleUpdateRequest request)
         {
             try
             {
-                var errors = new List<string>();
-                if (image != null)
+                if (request == null)
+                    throw new ArgumentNullException(nameof(request), "request was null");
+
+                string imageUrl = null;
+
+                if (request.ImageUrl != null)
                 {
                     var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/article/");
                     if (!Directory.Exists(directoryPath))
@@ -193,38 +201,38 @@ namespace DDD.Application.Services.Concrete
                         Console.WriteLine($"Path is preparing: {directoryPath}");
                         Directory.CreateDirectory(directoryPath);
                     }
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageUrl.FileName);
                     var filePath = Path.Combine(directoryPath, fileName);
+
                     try
                     {
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
-                            await image.CopyToAsync(stream);
+                            await request.ImageUrl.CopyToAsync(stream);
                         }
-                        var entity = new ArticleUpdateDto
-                        {
-                            Title = title,
-                            Subtitle = subtitle,
-                            Detail = detail,
-                            Description = description,
-                            CategoryId = categoryId,
-                            WriterId = writerId,
-                            Id = id
-                        };
-                        if (entity != null)
-                        {
-                            entity.ImageUrl = fileName;
-                            var result = _mapper.Map<Article>(entity);
-                            return await _articleRepository.UpdateAsync(result);
-                        }
-                        return false;
+
+                        imageUrl = $"/img/article/{fileName}";
                     }
                     catch (Exception ex)
                     {
-                        errors.Add($"Error {fileName} : {ex.Message}");
+                        throw new Exception($"Error uploading image: {ex.Message}", ex);
                     }
+                    var entity = new Article
+                    {
+                        Title = request.Title,
+                        Subtitle = request.Subtitle,
+                        Detail = request.Detail,
+                        Description = request.Description,
+                        CategoryId = request.CategoryId,
+                        WriterId = request.WriterId,
+                        ImageUrl = imageUrl,
+                        Id = request.Id
+                    };
+                    var result = _mapper.Map<Article>(request);
+                    return await _articleRepository.UpdateAsync(result);
                 }
-                throw new Exception("No Image for upload.");
+                return false;
             }
             catch (Exception ex)
             {
