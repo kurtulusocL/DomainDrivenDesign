@@ -2,11 +2,11 @@
 
 namespace DDD.Application.Dtos.AuthDtos
 {
-    public class RegisterDto
+    public class UserRegisterDto
     {
         public string NameSurname { get; set; }
         public string Email { get; set; }
-        public string  PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         [DataType(DataType.Password)]
         public string Password { get; set; }

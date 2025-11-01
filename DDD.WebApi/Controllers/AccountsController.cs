@@ -21,11 +21,11 @@ namespace DDD.WebApi.Controllers
             if (!result)
                 return BadRequest(new { message = "Login olunamadı." });
 
-            return Ok(new { message = "Login olundu." });
+            return Ok(new { success = true, message = "Login olundu.", returnUrl = model.ReturnUrl });
         }
 
         [HttpPost("admin-register")]
-        public async Task<IActionResult> AdminRegister(RegisterDto model)
+        public async Task<IActionResult> AdminRegister([FromBody] RegisterDto model)
         {
             var result = await _authService.AdminRegisterAsync(model);
             if (!result)
@@ -35,7 +35,7 @@ namespace DDD.WebApi.Controllers
         }
 
         [HttpPost("user-register")]
-        public async Task<IActionResult> UserRegister(RegisterDto model)
+        public async Task<IActionResult> UserRegister([FromBody] UserRegisterDto model)
         {
             var result = await _authService.RegisterAsync(model);
             if (result)

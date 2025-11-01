@@ -39,8 +39,7 @@ namespace DDD.Application.Services.Concrete
                     throw new ArgumentNullException(nameof(user), "User was null");
 
                 if (user.IsDeleted == false)
-                {
-                    _httpContextAccessor.HttpContext.Session.SetString("userId", user.Id);
+                {                    
                     var result = await _signInManager.PasswordSignInAsync(user, login.Password, false, true);
                     if (result.Succeeded)
                     {
@@ -72,7 +71,7 @@ namespace DDD.Application.Services.Concrete
             }
         }
 
-        public async Task<bool> RegisterAsync(RegisterDto model)
+        public async Task<bool> RegisterAsync(UserRegisterDto model)
         {
             try
             {
@@ -111,13 +110,11 @@ namespace DDD.Application.Services.Concrete
                     CreatedDate = DateTime.UtcNow
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
-                //await _userManager.AddToRoleAsync(user, "User");
-                //_httpContextAccessor.HttpContext.Session.SetString("email", user.Email);
 
                 if (result.Succeeded)
                 {
                     MimeMessage mimeMessage = new MimeMessage();
-                    MailboxAddress mailboxAddressFrom = new MailboxAddress("DDD", "registermail.activation@gmail.com");
+                    MailboxAddress mailboxAddressFrom = new MailboxAddress("DDD", "your mail address");
                     MailboxAddress mailboxAddressTo = new MailboxAddress(user.UserName, user.Email);
 
                     mimeMessage.From.Add(mailboxAddressFrom);
@@ -130,7 +127,7 @@ namespace DDD.Application.Services.Concrete
 
                     SmtpClient client = new SmtpClient();
                     client.Connect("smtp.gmail.com", 587, false);
-                    client.Authenticate("registermail.activation@gmail.com", "umlw sexu cbjh gfez");
+                    client.Authenticate("your mail address", "password or key");
                     await client.SendAsync(mimeMessage);
                     client.Disconnect(true);
                 }
